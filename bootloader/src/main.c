@@ -5,15 +5,16 @@
 //typedef unsigned char uint8_t;
 //
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#define RCC_BASE        0x40021000 // Reset and clock control RRC
-#define RCC_CR          (*(volatile uint32_t *)(RCC_BASE + 0x00))
-#define RCC_CFGR        (*(volatile uint32_t *)(RCC_BASE + 0x04))
+//#define RCC_BASE        0x40021000 // Reset and clock control RRC
+//#define RCC_CR          (*(volatile uint32_t *)(RCC_BASE + 0x00))
+//#define RCC_CFGR        (*(volatile uint32_t *)(RCC_BASE + 0x04))
 
 
 int main()
 {
+#if 0
     //volatile uint32_t *rcc_cr = (volatile uint32_t) RCC_CR;
     RCC_CR |= (1 << 16); // Bit 16 HSEON: HSE clock enable
     
@@ -25,6 +26,9 @@ int main()
                          //
     // Check if PLL ready
     while(!((RCC_CR >> 25) & 0x01)){} 
+#endif
+
+    while(1){}
     
     return 0;
 
