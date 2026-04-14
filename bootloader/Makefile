@@ -17,7 +17,7 @@ CFLAGS = $(MCU) -Wall -O0 -g -ffunction-sections -fdata-sections --specs=nosys.s
 LDFLAGS = $(MCU) -T scripts/bootloader.ld -Wl,--gc-sections -Wl,-Map=$(TARGET).map
 
 # 소스 파일 목록
-SRCS = src/main.c src/startup.c
+SRCS = src/main.c src/startup.c src/uart.c
 OBJS = $(SRCS:.c=.o)
 
 # 빌드 규칙

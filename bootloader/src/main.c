@@ -6,6 +6,7 @@
 //
 
 #include <stdint.h>
+#include "uart.h"
 
 #define RCC_BASE        0x40021000 // Reset and clock control RRC
 #define RCC_CR          (*(volatile uint32_t *)(RCC_BASE + 0x00))
@@ -16,19 +17,6 @@
 /* FLASH */
 #define FLASH_BASE      0x40022000 // Flash memory register
 #define FLASH_ACR       (*(volatile uint32_t *)(FLASH_BASE + 0x00))
-
-// GPIOA
-#define GPIOA_BASE      0x40010800 // GPIO A
-#define GPIOA_CRL       (*(volatile uint32_t *)(GPIOA_BASE + 0x00))
-
-
-// USART2
-#define USART2_BASE     0x40004400 // USART2
-#define USART2_SR       (*(volatile uint32_t *)(USART2_BASE + 0x00)) // Status register (USART_SR)
-#define USART2_BRR      (*(volatile uint32_t *)(USART2_BASE + 0x08)) // Baud rate register (USART_BRR)
-#define USART2_CR1      (*(volatile uint32_t *)(USART2_BASE + 0x0C)) // Control register 1 (USART_CR1)
-#define USART2_DR      (*(volatile uint32_t *)(USART2_BASE + 0x04)) // Data register (USART_DR)
-
 
 
 int main()
@@ -75,15 +63,9 @@ int main()
     // APB1 USART2 Clock Enable
     RCC_APB1ENR |= (0x01 << 17);
 
-    // GPIOA Config
-    GPIOA_CRL &= ~(0x0F << 8); // clear
-    GPIOA_CRL |= (0x0B << 8); // Bit[11:10]: Alternate function output, Bit[9:8]: Output mode, max 50MHz
 
-    // Set buadrate 115200
-    USART2_BRR = 0x139;
-
-    // Set USART2
-    USART2_CR1 = (1 << 13) | (1 << 3);
+    uart_init();
+    usart2_write_string("USART2 Init OK");
 
     // Test
     while(1)
@@ -93,9 +75,6 @@ int main()
 
         for(volatile int i = 0; i < 10000000; i++);
     }
-
-
-
 
     while(1){}
     
