@@ -70,10 +70,12 @@ int main()
     // Test
     while(1)
     {
-        while(!(USART2_SR  & (0x01 << 7))){}
-        USART2_DR = 'a';
+        //while(!(USART2_SR  & (0x01 << 7))){}
+        //USART2_DR = 'a';
 
-        for(volatile int i = 0; i < 10000000; i++);
+        //for(volatile int i = 0; i < 10000000; i++);
+        while(!(USART2_SR  & (0x01 << 5))){} // RXNE: Read data register not empty
+        usart2_write_char(USART2_DR & 0xFF);
     }
 
     while(1){}

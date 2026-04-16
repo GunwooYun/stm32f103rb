@@ -10,7 +10,8 @@ void uart_init(void)
     USART2_BRR = 0x139;
 
     // Set USART2
-    USART2_CR1 = (1 << 13) | (1 << 3);
+    USART2_CR1 = (1 << 13) | (1 << 3); // USART enable, Transmiiter enable
+    USART2_CR1 |= (1 << 2); // Reciever enable
 }
 
 void usart2_write_char(char c)
