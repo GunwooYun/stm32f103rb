@@ -18,6 +18,17 @@
 #define FLASH_BASE      0x40022000 // Flash memory register
 #define FLASH_ACR       (*(volatile uint32_t *)(FLASH_BASE + 0x00))
 
+/* SYSTICK (Timer) */
+#define SYSTICK_BASE    0xE000E010
+#define STK_CTRL        (*(volatile uint32_t *)(SYSTICK_BASE + 0x00))
+#define STK_LOAD        (*(volatile uint32_t *)(SYSTICK_BASE + 0x04))
+#define STK_VAL         (*(volatile uint32_t *)(SYSTICK_BASE + 0x08))
+
+volatile uint32_t cur_ticks = 0;
+void SysTick_Handler(void)
+{
+    cur_ticks++;
+}
 
 int main()
 {
@@ -67,6 +78,16 @@ int main()
     uart_init();
     usart2_write_string("USART2 Init OK");
 
+    STK_LOAD = 72000 - 1; // 72MHz -> 1ms
+    STK_VAL = 0; // Current count value
+    // Bit 0: Count enable
+    // Bit 1: SysTick exception request enable
+    // Bit 2: Clock source -> Processor clock AHB
+    STK_CTRL = 0x07;
+
+    uint32_t prev_ticks = 0;
+    uint32_t second = 0;
+
     // Test
     while(1)
     {
@@ -74,8 +95,15 @@ int main()
         //USART2_DR = 'a';
 
         //for(volatile int i = 0; i < 10000000; i++);
-        while(!(USART2_SR  & (0x01 << 5))){} // RXNE: Read data register not empty
-        usart2_write_char(USART2_DR & 0xFF);
+        //while(!(USART2_SR  & (0x01 << 5))){} // RXNE: Read data register not empty
+        //usart2_write_char(USART2_DR & 0xFF);
+        if( cur_ticks - prev_ticks >= 1000)
+        {
+            usart2_write_string("hello,world");
+            prev_ticks = cur_ticks;
+
+        }
+        //prev_ticks = cur_ticks;
     }
 
     while(1){}

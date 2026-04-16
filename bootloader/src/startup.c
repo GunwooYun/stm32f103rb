@@ -38,11 +38,18 @@ void Reset_Handler(void) {
     while (1);
 }
 
+extern void SysTick_Handler(void);
+
 /* 기본 예외 핸들러 (디버깅용 무한 루프) */
 void Default_Handler(void) {
     while (1);
 }
+/* 기본 예외 핸들러 (디버깅용 무한 루프) */
+void Reserved_Handler(void) {
+    while (1);
+}
 
+uint8_t reserved_handler[16] = {0x00, };
 /* 인터럽트 벡터 테이블 정의 */
 /* .isr_vector 섹션에 배치되어 Flash의 0x08000000 위치에 저장됨 */
 __attribute__((section(".isr_vector")))
@@ -51,5 +58,17 @@ uint32_t vectors[] = {
     (uint32_t)Reset_Handler,    /* 0x04: Reset Vector */
     (uint32_t)Default_Handler,  /* 0x08: NMI Handler */
     (uint32_t)Default_Handler,  /* 0x0C: HardFault Handler */
+    (uint32_t)Default_Handler,  /* 0x10: MemManage */
+    (uint32_t)Default_Handler,  /* 0x14: BusFault */
+    (uint32_t)Default_Handler,  /* 0x18: UsageFault */
+    (uint32_t)Reserved_Handler, /* 0x1C: Reserved Handler */
+    (uint32_t)Reserved_Handler, /* 0x20: Reserved Handler */
+    (uint32_t)Reserved_Handler, /* 0x24: Reserved Handler */
+    (uint32_t)Reserved_Handler, /* 0x28: Reserved Handler */
+    (uint32_t)Default_Handler,  /* 0x2C: SVCall */
+    (uint32_t)Default_Handler,  /* 0x30: Debug Monitor */
+    (uint32_t)Reserved_Handler, /* 0x34: Debug Monitor */
+    (uint32_t)Default_Handler,  /* 0x38: PendSV */
+    (uint32_t)SysTick_Handler,  /* 0x3C: System tick timer */
     /* 필요에 따라 추가 인터럽트 핸들러 배치 가능 */
 };
