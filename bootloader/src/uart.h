@@ -14,5 +14,10 @@
 
 void uart_init(void);
 
-void usart2_write_char(char c);
-void usart2_write_string(char *str);
+void uart_write_char(char c);
+void uart_write_string(char *str);
+void uart_write_line(char *str);
+void uart2_write_hex(uint32_t val);
+void uart_write_dec(int val);
+
+void uart_printf(const char *format, ...);

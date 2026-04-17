@@ -30,6 +30,20 @@ void SysTick_Handler(void)
     cur_ticks++;
 }
 
+uint8_t xmodem_receive_timeout(char *ch, uint32_t timeout)
+{
+    uint32_t start_ticks = cur_ticks;
+    while(cur_ticks - start_ticks < timeout)
+    {
+        if(USART2_SR & (0x01 << 5))
+        {
+            *ch = (char)(USART2_DR & 0xFF);
+            return 0;
+        }
+    }
+    return 1;
+}
+
 int main()
 {
 
@@ -76,7 +90,8 @@ int main()
 
 
     uart_init();
-    usart2_write_string("USART2 Init OK");
+    //usart2_write_string("USART2 Init OK");
+    uart_printf("USART2 Init OK");
 
     STK_LOAD = 72000 - 1; // 72MHz -> 1ms
     STK_VAL = 0; // Current count value
@@ -88,22 +103,19 @@ int main()
     uint32_t prev_ticks = 0;
     uint32_t second = 0;
 
+    char ch;
+
+    uint8_t ret = 0;
+
     // Test
     while(1)
     {
-        //while(!(USART2_SR  & (0x01 << 7))){}
-        //USART2_DR = 'a';
+        while(!(USART2_SR  & (0x01 << 7))){}
+        USART2_DR = 'C';
+        
+        ret = xmodem_receive_timeout(&ch, 3000);
+        if(ret == 0) uart_printf("%c", ch); //usart2_write_char(ch);
 
-        //for(volatile int i = 0; i < 10000000; i++);
-        //while(!(USART2_SR  & (0x01 << 5))){} // RXNE: Read data register not empty
-        //usart2_write_char(USART2_DR & 0xFF);
-        if( cur_ticks - prev_ticks >= 1000)
-        {
-            usart2_write_string("hello,world");
-            prev_ticks = cur_ticks;
-
-        }
-        //prev_ticks = cur_ticks;
     }
 
     while(1){}
