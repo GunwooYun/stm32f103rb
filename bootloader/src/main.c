@@ -24,6 +24,14 @@
 #define STK_LOAD        (*(volatile uint32_t *)(SYSTICK_BASE + 0x04))
 #define STK_VAL         (*(volatile uint32_t *)(SYSTICK_BASE + 0x08))
 
+/* Flash memory */
+#define FLASH_BASE      0x40022000
+#define FLASH_ACR       (*(volatile uint32_t *)(SYSTICK_BASE + 0x00))
+#define FLASH_KEYR      (*(volatile uint32_t *)(SYSTICK_BASE + 0x04)) // FPEC key register
+#define FLASH_SR        (*(volatile uint32_t *)(SYSTICK_BASE + 0x0C)) // Flash Status Register
+#define FLASH_CR        (*(volatile uint32_t *)(SYSTICK_BASE + 0x0C))
+#define FLASH_AR
+
 volatile uint32_t cur_ticks = 0;
 void SysTick_Handler(void)
 {
